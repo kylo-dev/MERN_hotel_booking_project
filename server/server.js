@@ -6,9 +6,12 @@ import { clerkMiddleware } from "@clerk/express";
 import clerkWebhooks from "./controllers/clerkWebhooks.js";
 import userRouter from "./routes/userRoutes.js";
 import hotelRouter from "./routes/hotelRoutes.js";
+import roomRouter from "./routes/roomRoutes.js";
+import connectCloudinary from "./configs/cloudinary.js";
 
 // DB Connect
 connectDB();
+connectCloudinary();
 
 const app = express();
 
@@ -25,6 +28,7 @@ app.get("/", (req, res) => res.send("API is fine"));
 // Router 연결
 app.use("/api/users", userRouter);
 app.use("/api/hotels", hotelRouter);
+app.use("/api/rooms", roomRouter);
 
 const PORT = process.env.PORT || 3000;
 
