@@ -10,7 +10,8 @@
     "build": "tsc",
     "start:prod": "node dist/server.js",
     "clean": "rm -rf dist/",
-    "rebuild": "npm run clean && npm run build"
+    "rebuild": "npm run clean && npm run build",
+    "vercel-build": "npm run build"
   },
   "keywords": [],
   "author": "",
