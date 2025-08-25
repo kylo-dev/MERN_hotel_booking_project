@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Router } from "express";
 import upload from "../middleware/uploadMiddleware.js";
 import { protect } from "../middleware/authMiddleware.js";
 import {
@@ -8,7 +8,7 @@ import {
   toggleRoomAvailability,
 } from "../controllers/roomController.js";
 
-const roomRouter = express.Router();
+const roomRouter: Router = express.Router();
 
 roomRouter.post("/", upload.array("images", 4), protect, createRoom);
 roomRouter.get("/", getRooms);

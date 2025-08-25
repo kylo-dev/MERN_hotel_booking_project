@@ -4,3 +4,10 @@ node_modules
 .env
 client/.env
 server/.env
+
+# log
+*.log
+
+# build
+dist/
+build/

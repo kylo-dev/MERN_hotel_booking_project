@@ -1,8 +1,20 @@
+import { Request, Response } from "express";
 import Booking from "../models/Booking.js";
 import Room from "../models/Room.js";
 import Hotel from "../models/Hotel.js";
+import { isAuthRequest, isError } from "../types/guards.js";
 
-const checkAvailability = async ({ checkInDate, checkOutDate, room }) => {
+interface AvailabilityRequest {
+  checkInDate: string;
+  checkOutDate: string;
+  room: string;
+}
+
+const checkAvailability = async ({
+  checkInDate,
+  checkOutDate,
+  room,
+}: AvailabilityRequest): Promise<boolean | undefined> => {
   try {
     const bookings = await Booking.find({
       room,
@@ -13,11 +25,16 @@ const checkAvailability = async ({ checkInDate, checkOutDate, room }) => {
     const isAvailable = bookings.length === 0;
     return isAvailable;
   } catch (error) {
-    console.log(error.message);
+    if (isError(error)) {
+      console.log(error.message);
+    }
   }
 };
 
-export const checkAvailabilityAPI = async (req, res) => {
+export const checkAvailabilityAPI = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const { room, checkInDate, checkOutDate } = req.body;
     const isAvailable = await checkAvailability({
@@ -27,14 +44,30 @@ export const checkAvailabilityAPI = async (req, res) => {
     });
     res.json({ success: true, isAvailable });
   } catch (error) {
-    res.json({ success: false, message: error.message });
+    if (isError(error)) {
+      res.json({ success: false, message: error.message });
+    }
   }
 };
 
-export const createBooking = async (req, res) => {
+export const createBooking = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
+    // 타입 가드를 사용하여 AuthRequest로 변환
+    if (!isAuthRequest(req)) {
+      res.json({ success: false, message: "Invalid request type" });
+      return;
+    }
+
     const { room, checkInDate, checkOutDate, guests } = req.body;
-    const user = req.user._id;
+    const user = req.user?._id;
+
+    if (!user) {
+      res.json({ success: false, message: "User not found" });
+      return;
+    }
 
     const isAvailable = await checkAvailability({
       checkInDate,
@@ -43,11 +76,17 @@ export const createBooking = async (req, res) => {
     });
 
     if (!isAvailable) {
-      return res.json({ success: false, message: "Room is not available" });
+      res.json({ success: false, message: "Room is not available" });
+      return;
     }
 
     // Get totalPrice from Room
     const roomData = await Room.findById(room).populate("hotel");
+
+    if (!roomData) {
+      res.json({ success: false, message: "Room not found" });
+      return;
+    }
 
     // Calculate totalPrice based on nights
     const checkIn = new Date(checkInDate);
@@ -60,7 +99,7 @@ export const createBooking = async (req, res) => {
     const booking = await Booking.create({
       user,
       room,
-      hotel: roomData.hotel._id,
+      hotel: (roomData.hotel as any)._id,
       guests: +guests,
       checkInDate,
       checkOutDate,
@@ -69,14 +108,30 @@ export const createBooking = async (req, res) => {
 
     res.json({ success: true, message: "Booking created successfully" });
   } catch (error) {
-    console.log(error.message);
+    if (isError(error)) {
+      console.log(error.message);
+    }
     res.json({ success: false, message: "Failed to create booking" });
   }
 };
 
-export const getUserBookings = async (req, res) => {
+export const getUserBookings = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
-    const user = req.user._id;
+    // 타입 가드를 사용하여 AuthRequest로 변환
+    if (!isAuthRequest(req)) {
+      res.json({ success: false, message: "Invalid request type" });
+      return;
+    }
+
+    const user = req.user?._id;
+    if (!user) {
+      res.json({ success: false, message: "User not found" });
+      return;
+    }
+
     const bookings = await Booking.find({ user })
       .populate("room hotel")
       .sort({ createdAt: -1 });
@@ -86,21 +141,33 @@ export const getUserBookings = async (req, res) => {
   }
 };
 
-export const getHotelBookings = async (req, res) => {
+export const getHotelBookings = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
-    const hotel = await Hotel.findOne({ owner: req.auth.userId });
-    if (!hotel) {
-      return res.json({ success: false, message: "No Hotel found" });
+    // 타입 가드를 사용하여 AuthRequest로 변환
+    if (!isAuthRequest(req)) {
+      res.json({ success: false, message: "Invalid request type" });
+      return;
     }
+
+    const hotel = await Hotel.findOne({ owner: req.auth?.userId });
+    if (!hotel) {
+      res.json({ success: false, message: "No Hotel found" });
+      return;
+    }
+
     const bookings = await Booking.find({ hotel: hotel._id })
       .populate("room hotel user")
       .sort({ createdAt: -1 });
 
     const totalBookings = bookings.length;
     const totalRevenue = bookings.reduce(
-      (acc, booking) => acc + booking.totalPrice,
+      (acc: number, booking: any) => acc + booking.totalPrice,
       0
     );
+
     res.json({
       success: true,
       dashboardData: { totalBookings, totalRevenue, bookings },

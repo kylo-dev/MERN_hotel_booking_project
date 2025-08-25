@@ -24,7 +24,9 @@ app.use(clerkMiddleware());
 // API to listen to Clerk Webhooks
 app.use("/api/clerk", clerkWebhooks);
 
-app.get("/", (req, res) => res.send("API is fine"));
+app.get("/", (req, res) => {
+  res.send("API is fine");
+});
 
 // Router 연결
 app.use("/api/users", userRouter);
@@ -34,4 +36,6 @@ app.use("/api/bookings", bookingRouter);
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});

@@ -1,10 +1,33 @@
+import { Request, Response } from "express";
 import User from "../models/User.js";
 import { Webhook } from "svix";
 
-const clerkWebhooks = async (req, res) => {
+interface ClerkWebhookRequest extends Request {
+  headers: {
+    "svix-id"?: string;
+    "svix-timestamp"?: string;
+    "svix-signature"?: string;
+    [key: string]: any;
+  };
+  body: {
+    data: {
+      id: string;
+      email_addresses: Array<{ email_address: string }>;
+      first_name: string;
+      last_name: string;
+      image_url: string;
+    };
+    type: string;
+  };
+}
+
+const clerkWebhooks = async (
+  req: ClerkWebhookRequest,
+  res: Response
+): Promise<void> => {
   try {
     // Create a Svix instance with clerk webhook secret.
-    const webhook = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
+    const webhook = new Webhook(process.env.CLERK_WEBHOOK_SECRET || "");
 
     const headers = {
       "svix-id": req.headers["svix-id"],
@@ -13,7 +36,7 @@ const clerkWebhooks = async (req, res) => {
     };
 
     // Verifying Headers
-    await webhook.verify(JSON.stringify(req.body), headers);
+    await webhook.verify(JSON.stringify(req.body), headers as any);
 
     // Getting Data from request Body
     const { data, type } = req.body;
@@ -48,8 +71,10 @@ const clerkWebhooks = async (req, res) => {
 
     res.json({ success: true, message: "Webhook Recieved" });
   } catch (error) {
-    console.log(error.message);
-    res.json({ success: false, message: error.message });
+    if (error instanceof Error) {
+      console.log(error.message);
+      res.json({ success: false, message: error.message });
+    }
   }
 };
 
