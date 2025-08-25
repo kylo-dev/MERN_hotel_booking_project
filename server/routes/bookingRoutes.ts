@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Router } from "express";
 import {
   checkAvailabilityAPI,
   createBooking,
@@ -7,7 +7,7 @@ import {
 } from "../controllers/bookingController.js";
 import { protect } from "../middleware/authMiddleware.js";
 
-const bookingRouter = express.Router();
+const bookingRouter: Router = express.Router();
 
 bookingRouter.post("/check-availaility", checkAvailabilityAPI);
 bookingRouter.post("/book", protect, createBooking);
