@@ -1,1 +1,8 @@
 .env
+
+# log
+*.log
+
+# build
+dist/
+build/

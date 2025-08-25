@@ -1,6 +1,7 @@
 import mongoose, { Document, Schema } from "mongoose";
 
 export interface IHotel extends Document {
+  _id: string;
   name: string;
   address: string;
   contact: string;
