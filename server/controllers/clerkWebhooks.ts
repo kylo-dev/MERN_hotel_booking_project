@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import User from "../models/User.js";
 import { Webhook } from "svix";
+import { isError } from "../types/guards.js";
 
 interface ClerkWebhookRequest extends Request {
   headers: {
@@ -71,7 +72,7 @@ const clerkWebhooks = async (
 
     res.json({ success: true, message: "Webhook Recieved" });
   } catch (error) {
-    if (error instanceof Error) {
+    if (isError(error)) {
       console.log(error.message);
       res.json({ success: false, message: error.message });
     }

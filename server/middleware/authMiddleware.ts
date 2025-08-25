@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 import User from "../models/User.js";
 import { AuthRequest, isError } from "../types/guards.js";
 
@@ -20,8 +20,6 @@ export const protect = async (
   } catch (error) {
     if (isError(error)) {
       res.json({ success: false, message: error.message });
-    } else {
-      res.json({ success: false, message: "Authentication failed" });
     }
   }
 };
