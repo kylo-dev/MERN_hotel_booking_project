@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import Booking from "../models/Booking.js";
 import Room from "../models/Room.js";
 import Hotel from "../models/Hotel.js";
-import { isAuthRequest, isError } from "../types/guards.js";
+import { AuthRequest, isError } from "../types/guards.js";
 
 interface AvailabilityRequest {
   checkInDate: string;
@@ -51,16 +51,10 @@ export const checkAvailabilityAPI = async (
 };
 
 export const createBooking = async (
-  req: Request,
+  req: AuthRequest,
   res: Response
 ): Promise<void> => {
   try {
-    // 타입 가드를 사용하여 AuthRequest로 변환
-    if (!isAuthRequest(req)) {
-      res.json({ success: false, message: "Invalid request type" });
-      return;
-    }
-
     const { room, checkInDate, checkOutDate, guests } = req.body;
     const user = req.user?._id;
 
@@ -116,16 +110,10 @@ export const createBooking = async (
 };
 
 export const getUserBookings = async (
-  req: Request,
+  req: AuthRequest,
   res: Response
 ): Promise<void> => {
   try {
-    // 타입 가드를 사용하여 AuthRequest로 변환
-    if (!isAuthRequest(req)) {
-      res.json({ success: false, message: "Invalid request type" });
-      return;
-    }
-
     const user = req.user?._id;
     if (!user) {
       res.json({ success: false, message: "User not found" });
@@ -142,16 +130,10 @@ export const getUserBookings = async (
 };
 
 export const getHotelBookings = async (
-  req: Request,
+  req: AuthRequest,
   res: Response
 ): Promise<void> => {
   try {
-    // 타입 가드를 사용하여 AuthRequest로 변환
-    if (!isAuthRequest(req)) {
-      res.json({ success: false, message: "Invalid request type" });
-      return;
-    }
-
     const hotel = await Hotel.findOne({ owner: req.auth?.userId });
     if (!hotel) {
       res.json({ success: false, message: "No Hotel found" });

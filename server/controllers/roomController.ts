@@ -2,19 +2,13 @@ import { Request, Response } from "express";
 import Hotel, { IHotel } from "../models/Hotel.js";
 import Room from "../models/Room.js";
 import { v2 as cloudinary } from "cloudinary";
-import { isCombinedRequest, isAuthRequest, isError } from "../types/guards.js";
+import { CombinedRequest, AuthRequest, isError } from "../types/guards.js";
 
 export const createRoom = async (
-  req: Request,
+  req: CombinedRequest,
   res: Response
 ): Promise<void> => {
   try {
-    // 타입 가드를 사용하여 CombinedRequest로 변환
-    if (!isCombinedRequest(req)) {
-      res.json({ success: false, message: "Invalid request type" });
-      return;
-    }
-
     const { roomType, pricePerNight, amenities } = req.body;
     const hotel = await Hotel.findOne({ owner: req.auth?.userId });
 
@@ -71,16 +65,10 @@ export const getRooms = async (req: Request, res: Response): Promise<void> => {
 };
 
 export const getOwnerRooms = async (
-  req: Request,
+  req: AuthRequest,
   res: Response
 ): Promise<void> => {
   try {
-    // 타입 가드를 사용하여 AuthRequest로 변환
-    if (!isAuthRequest(req)) {
-      res.json({ success: false, message: "Invalid request type" });
-      return;
-    }
-
     const hotelData: IHotel | null = await Hotel.findOne({
       owner: req.auth?.userId,
     });
@@ -101,16 +89,10 @@ export const getOwnerRooms = async (
 };
 
 export const toggleRoomAvailability = async (
-  req: Request,
+  req: AuthRequest,
   res: Response
 ): Promise<void> => {
   try {
-    // 타입 가드를 사용하여 AuthRequest로 변환
-    if (!isAuthRequest(req)) {
-      res.json({ success: false, message: "Invalid request type" });
-      return;
-    }
-
     const { roomId } = req.body;
     const roomData = await Room.findById(roomId);
 

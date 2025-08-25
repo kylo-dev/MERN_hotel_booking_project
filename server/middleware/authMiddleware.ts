@@ -1,19 +1,13 @@
 import { Request, Response, NextFunction } from "express";
 import User from "../models/User.js";
-import { isAuthRequest, isError } from "../types/guards.js";
+import { AuthRequest, isError } from "../types/guards.js";
 
 export const protect = async (
-  req: Request,
+  req: AuthRequest,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    // 타입 가드를 사용하여 AuthRequest로 변환
-    if (!isAuthRequest(req)) {
-      res.json({ success: false, message: "Invalid request type" });
-      return;
-    }
-
     const { userId } = req.auth || {};
     if (!userId) {
       res.json({ success: false, message: "not authenticated" });
