@@ -19,7 +19,7 @@ const hotelSchema: Schema<IHotel> = new Schema(
     owner: { type: String, required: true, ref: "User" },
     city: { type: String, required: true },
   },
-  { timestamps: true }
+  { timestamps: true, versionKey: false }
 );
 
 const Hotel = mongoose.model<IHotel>("Hotel", hotelSchema);

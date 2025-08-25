@@ -20,7 +20,7 @@ const roomSchema: Schema<IRoom> = new Schema(
     images: [{ type: String }],
     isAvailable: { type: Boolean, default: true },
   },
-  { timestamps: true }
+  { timestamps: true, versionKey: false }
 );
 
 const Room = mongoose.model<IRoom>("Room", roomSchema);
