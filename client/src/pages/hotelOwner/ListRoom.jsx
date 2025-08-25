@@ -1,9 +1,55 @@
-import React, { useState } from "react";
-import { roomsDummyData } from "../../assets/assets";
+import React, { useEffect, useState } from "react";
 import Title from "../../components/Title";
+import toast from "react-hot-toast";
+import { useAppContext } from "../../context/AppContext";
 
 const ListRoom = () => {
-  const [rooms, setRooms] = useState(roomsDummyData);
+  const [rooms, setRooms] = useState([]);
+
+  const { axios, getToken, user } = useAppContext();
+
+  // Fetch Rooms of the Hotel Owner
+  const fetchRooms = async () => {
+    try {
+      const { data } = await axios.get("/api/rooms/owner", {
+        headers: { Authorization: `Bearer ${await getToken()}` },
+      });
+      if (data.success) {
+        setRooms(data.rooms);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  // Toggle Availability of the Room
+  const toggleAvailability = async (roomId) => {
+    try {
+      const { data } = await axios.post(
+        "/api/rooms/toggle-availability",
+        { roomId },
+        {
+          headers: { Authorization: `Bearer ${await getToken()}` },
+        }
+      );
+      if (data.success) {
+        toast.success(data.message);
+        fetchRooms();
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      fetchRooms();
+    }
+  }, [user]);
 
   return (
     <div>
@@ -48,19 +94,25 @@ const ListRoom = () => {
 
                 <td className="py-3 px-4 text-red-500 border-t border-gray-300 text-sm text-center">
                   <label
-                    htmlFor=""
-                    className="relative inline-flex items-center cursor-pointer
-                  text-gray-900 gap-3"
+                    htmlFor={`room-${item._id}`}
+                    className="relative inline-flex items-center cursor-pointer text-gray-900 gap-3"
                   >
                     <input
+                      id={`room-${item._id}`}
+                      onChange={() => toggleAvailability(item._id)}
                       type="checkbox"
                       className="sr-only peer"
                       checked={item.isAvailable}
                     />
-                    <div className="w-12 h-7 bg-slate-300 rounded-full peer peer-checked:bg-blue-600 transition-colors duration-200"></div>
+                    <div
+                      className={`w-12 h-7 rounded-full transition-colors duration-200 ${
+                        item.isAvailable ? "bg-blue-600" : "bg-slate-300"
+                      }`}
+                    ></div>
                     <span
-                      className="dot absolute left-1 top-1 w-5 h-5 bg-white rounded-full transition-transform duration-200 ease-in-out
-                    peer-checked:translate-x-5"
+                      className={`dot absolute left-1 top-1 w-5 h-5 bg-white rounded-full transition-transform duration-200 ease-in-out ${
+                        item.isAvailable ? "translate-x-5" : "translate-x-0"
+                      }`}
                     ></span>
                   </label>
                 </td>
