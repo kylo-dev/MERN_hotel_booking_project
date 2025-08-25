@@ -6,7 +6,7 @@ import { useAppContext } from "../../context/AppContext";
 const ListRoom = () => {
   const [rooms, setRooms] = useState([]);
 
-  const { axios, getToken, user } = useAppContext();
+  const { currency, axios, getToken, user } = useAppContext();
 
   // Fetch Rooms of the Hotel Owner
   const fetchRooms = async () => {
@@ -89,7 +89,7 @@ const ListRoom = () => {
                 </td>
 
                 <td className="py-3 px-4 text-gray-700 border-t border-gray-300 text-center">
-                  $ {item.pricePerNight}
+                  {currency} {item.pricePerNight}
                 </td>
 
                 <td className="py-3 px-4 text-red-500 border-t border-gray-300 text-sm text-center">
