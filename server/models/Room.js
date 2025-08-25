@@ -5,7 +5,7 @@ const roomSchema = mongoose.Schema(
     hotel: { type: String, ref: "Hotel", required: true },
     roomType: { type: String, required: true },
     pricePerNight: { type: Number, required: true },
-    amenities: { type: Array, required: true },
+    amenities: [{ type: String }],
     images: [{ type: String }],
     isAvailable: { type: Boolean, default: true },
   },
