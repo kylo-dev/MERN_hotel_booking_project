@@ -1,20 +1,34 @@
 import React, { useState } from "react";
 import Title from "../../components/Title";
-import { assets } from "../../assets/assets";
-import { useAppContext } from "../../context/AppContext.tsx";
+import { assets } from "../../assets/assets.ts";
+import { useAppContext } from "../../context/AppContext";
 import toast from "react-hot-toast";
 
-const AddRoom = () => {
+interface Images {
+  [key: string]: File | null;
+}
+
+interface Amenities {
+  [key: string]: boolean;
+}
+
+interface Inputs {
+  roomType: string;
+  pricePerNight: number;
+  amenities: Amenities;
+}
+
+const AddRoom: React.FC = () => {
   const { axios, getToken } = useAppContext();
 
-  const [images, setImages] = useState({
+  const [images, setImages] = useState<Images>({
     1: null,
     2: null,
     3: null,
     4: null,
   });
 
-  const [inputs, setInputs] = useState({
+  const [inputs, setInputs] = useState<Inputs>({
     roomType: "",
     pricePerNight: 0,
     amenities: {
@@ -26,9 +40,11 @@ const AddRoom = () => {
     },
   });
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const onSubmitHandler = async (e) => {
+  const onSubmitHandler = async (
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
     e.preventDefault();
     if (
       !inputs.roomType ||
@@ -43,7 +59,7 @@ const AddRoom = () => {
     try {
       const formData = new FormData();
       formData.append("roomType", inputs.roomType);
-      formData.append("pricePerNight", inputs.pricePerNight);
+      formData.append("pricePerNight", inputs.pricePerNight.toString());
 
       const amenities = Object.keys(inputs.amenities).filter(
         (key) => inputs.amenities[key]
@@ -51,7 +67,9 @@ const AddRoom = () => {
       formData.append("amenities", JSON.stringify(amenities));
 
       Object.keys(images).forEach((key) => {
-        images[key] && formData.append("images", images[key]);
+        if (images[key]) {
+          formData.append("images", images[key]!);
+        }
       });
 
       const { data } = await axios.post(`/api/rooms`, formData, {
@@ -75,8 +93,8 @@ const AddRoom = () => {
       } else {
         toast.error(data.message);
       }
-    } catch (error) {
-      toast.error(error.message);
+    } catch (error: any) {
+      toast.error(error.message || "방 추가에 실패했습니다.");
     } finally {
       setLoading(false);
     }
@@ -100,7 +118,7 @@ const AddRoom = () => {
               className="max-h-13 cursor-pointer opacity-80"
               src={
                 images[key]
-                  ? URL.createObjectURL(images[key])
+                  ? URL.createObjectURL(images[key]!)
                   : assets.uploadArea
               }
               alt=""
@@ -111,7 +129,7 @@ const AddRoom = () => {
               id={`roomImage${key}`}
               hidden
               onChange={(e) =>
-                setImages({ ...images, [key]: e.target.files[0] })
+                setImages({ ...images, [key]: e.target.files?.[0] || null })
               }
             />
           </label>
@@ -144,7 +162,7 @@ const AddRoom = () => {
             className="border border-gray-300 mt-1 rounded p-2 w-24"
             value={inputs.pricePerNight}
             onChange={(e) =>
-              setInputs({ ...inputs, pricePerNight: e.target.value })
+              setInputs({ ...inputs, pricePerNight: Number(e.target.value) })
             }
           />
         </div>
@@ -168,7 +186,7 @@ const AddRoom = () => {
                 })
               }
             />
-            <label htmlFor="{`amenities${index + 1}`}"> {amenity}</label>
+            <label htmlFor={`amenities${index + 1}`}> {amenity}</label>
           </div>
         ))}
       </div>

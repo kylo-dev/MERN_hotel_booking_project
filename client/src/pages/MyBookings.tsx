@@ -1,9 +1,30 @@
 import React, { useState } from "react";
 import Title from "../components/Title";
-import { assets, userBookingsDummyData } from "../assets/assets";
+import { assets, userBookingsDummyData } from "../assets/assets.ts";
 
-const MyBookings = () => {
-  const [bookings, setBookings] = useState(userBookingsDummyData);
+interface Room {
+  images: string[];
+  roomType: string;
+}
+
+interface Hotel {
+  name: string;
+  address: string;
+}
+
+interface Booking {
+  _id: string;
+  room: Room;
+  hotel: Hotel;
+  guests: number;
+  totalPrice: number;
+  checkInDate: string;
+  checkOutDate: string;
+  isPaid: boolean;
+}
+
+const MyBookings: React.FC = () => {
+  const [bookings, setBookings] = useState<Booking[]>(userBookingsDummyData);
 
   return (
     <div className="py-28 md:pb-35 md:pt-32 px-4 md:px-16 lg:px-24 xl:px-32">
@@ -20,7 +41,7 @@ const MyBookings = () => {
           <div className="w-1/3">Payment</div>
         </div>
 
-        {bookings.map((booking) => (
+        {bookings.map((booking: Booking) => (
           <div
             key={booking._id}
             className="grid grid-cols-1 md:grid-cols-[3fr_2fr_1fr] w-full border-b

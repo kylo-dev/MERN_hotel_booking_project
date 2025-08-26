@@ -1,15 +1,23 @@
 import React, { useEffect, useState } from "react";
 import Title from "../../components/Title";
 import toast from "react-hot-toast";
-import { useAppContext } from "../../context/AppContext.tsx";
+import { useAppContext } from "../../context/AppContext";
 
-const ListRoom = () => {
-  const [rooms, setRooms] = useState([]);
+interface Room {
+  _id: string;
+  roomType: string;
+  amenities: string[];
+  pricePerNight: number;
+  isAvailable: boolean;
+}
+
+const ListRoom: React.FC = () => {
+  const [rooms, setRooms] = useState<Room[]>([]);
 
   const { currency, axios, getToken, user } = useAppContext();
 
   // Fetch Rooms of the Hotel Owner
-  const fetchRooms = async () => {
+  const fetchRooms = async (): Promise<void> => {
     try {
       const { data } = await axios.get("/api/rooms/owner", {
         headers: { Authorization: `Bearer ${await getToken()}` },
@@ -19,13 +27,13 @@ const ListRoom = () => {
       } else {
         toast.error(data.message);
       }
-    } catch (error) {
-      toast.error(error.message);
+    } catch (error: any) {
+      toast.error(error.message || "방 정보를 불러오는데 실패했습니다.");
     }
   };
 
   // Toggle Availability of the Room
-  const toggleAvailability = async (roomId) => {
+  const toggleAvailability = async (roomId: string): Promise<void> => {
     try {
       const { data } = await axios.post(
         "/api/rooms/toggle-availability",
@@ -40,8 +48,8 @@ const ListRoom = () => {
       } else {
         toast.error(data.message);
       }
-    } catch (error) {
-      toast.error(error.message);
+    } catch (error: any) {
+      toast.error(error.message || "가용성 변경에 실패했습니다.");
     }
   };
 
@@ -78,7 +86,7 @@ const ListRoom = () => {
             </tr>
           </thead>
           <tbody className="text-sm">
-            {rooms.map((item, index) => (
+            {rooms.map((item: Room, index: number) => (
               <tr key={index}>
                 <td className="py-3 px-4 text-gray-700 border-t border-gray-300">
                   {item.roomType}
