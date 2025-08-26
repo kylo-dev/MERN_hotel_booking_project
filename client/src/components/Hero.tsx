@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { assets, cities } from "../assets/assets";
 import { useAppContext } from "../context/AppContext";
 
@@ -6,7 +6,7 @@ const Hero = () => {
   const [destination, setDestination] = useState("");
   const { navigate, getToken, axios, setSearchedCities } = useAppContext();
 
-  const onSearch = async (e) => {
+  const onSearch = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     navigate(`/rooms?destination=${destination}`);
 
@@ -17,7 +17,7 @@ const Hero = () => {
       },
       { headers: { Authorization: `Bearer ${await getToken()}` } }
     );
-    setSearchedCities((prevSearchedCities) => {
+    setSearchedCities((prevSearchedCities: string[]) => {
       const updatedSearchedCities = [...prevSearchedCities, destination];
       if (updatedSearchedCities.length > 3) {
         updatedSearchedCities.shift();
@@ -65,7 +65,7 @@ const Hero = () => {
             required
           />
           <datalist id="destinations">
-            {cities.map((city, index) => (
+            {cities.map((city: string, index: number) => (
               <option value={city} key={index} />
             ))}
           </datalist>

@@ -2,7 +2,20 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { assets } from "../assets/assets";
 
-const HotelCard = ({ room, index }) => {
+interface HotelCardProps {
+  room: {
+    _id: string;
+    images: string[];
+    pricePerNight: number;
+    hotel: {
+      name: string;
+      address: string;
+    };
+  };
+  index: number;
+}
+
+const HotelCard: React.FC<HotelCardProps> = ({ room, index }) => {
   return (
     <Link
       to={"/rooms/" + room._id}

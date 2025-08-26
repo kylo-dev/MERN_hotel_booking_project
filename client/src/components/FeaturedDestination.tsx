@@ -1,4 +1,3 @@
-import React from "react";
 import HotelCard from "./HotelCard";
 import Title from "./Title";
 import { useAppContext } from "../context/AppContext";

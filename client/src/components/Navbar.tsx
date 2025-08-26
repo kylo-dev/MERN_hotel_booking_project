@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { assets } from "../assets/assets";
 import { Link, useLocation } from "react-router-dom";
 import { useClerk, UserButton } from "@clerk/clerk-react";
-import { useAppContext } from "../context/AppContext.jsx";
+import { useAppContext } from "../context/AppContext";
 
 const BookIcon = () => (
   <svg
@@ -24,8 +24,13 @@ const BookIcon = () => (
   </svg>
 );
 
+interface NavLink {
+  name: string;
+  path: string;
+}
+
 const Navbar = () => {
-  const navLinks = [
+  const navLinks: NavLink[] = [
     { name: "Home", path: "/" },
     { name: "Hotels", path: "/rooms" },
     { name: "Experience", path: "/" },
@@ -43,18 +48,16 @@ const Navbar = () => {
   useEffect(() => {
     if (location.pathname !== "/") {
       setIsScrolled(true);
-      return;
     } else {
       setIsScrolled(false);
     }
-    setIsScrolled((prev) => (location.pathname !== "/" ? true : prev));
 
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [location.pathname]);
 
   return (
     <nav
@@ -127,7 +130,7 @@ const Navbar = () => {
           </UserButton>
         ) : (
           <button
-            onClick={openSignIn}
+            onClick={() => openSignIn()}
             className={`px-8 py-2.5 rounded-full ml-4 transition-all duration-500 ${
               isScrolled ? "text-white bg-black" : "bg-white text-black"
             }`}
@@ -189,7 +192,7 @@ const Navbar = () => {
 
         {!user && (
           <button
-            onClick={openSignIn}
+            onClick={() => openSignIn()}
             className="bg-black text-white px-8 py-2.5 rounded-full transition-all duration-500"
           >
             Login

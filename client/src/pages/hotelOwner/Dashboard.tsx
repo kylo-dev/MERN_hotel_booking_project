@@ -4,16 +4,37 @@ import { assets } from "../../assets/assets";
 import { useAppContext } from "../../context/AppContext";
 import toast from "react-hot-toast";
 
-const Dashboard = () => {
+interface User {
+  username: string;
+}
+
+interface Room {
+  roomType: string;
+}
+
+interface Booking {
+  user: User;
+  room: Room;
+  totalPrice: number;
+  isPaid: boolean;
+}
+
+interface DashboardData {
+  bookings: Booking[];
+  totalBookings: number;
+  totalRevenue: number;
+}
+
+const Dashboard: React.FC = () => {
   const { currency, user, getToken, axios } = useAppContext();
 
-  const [dashboardData, setDashboardData] = useState({
+  const [dashboardData, setDashboardData] = useState<DashboardData>({
     bookings: [],
     totalBookings: 0,
     totalRevenue: 0,
   });
 
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = async (): Promise<void> => {
     try {
       const { data } = await axios.get("/api/bookings/hotel", {
         headers: { Authorization: `Bearer ${await getToken()}` },
@@ -23,8 +44,8 @@ const Dashboard = () => {
       } else {
         toast.error(data.message);
       }
-    } catch (error) {
-      toast.error(data.message);
+    } catch (error: any) {
+      toast.error(error.message || "데이터를 불러오는데 실패했습니다.");
     }
   };
 
@@ -95,7 +116,7 @@ const Dashboard = () => {
             </tr>
           </thead>
           <tbody className="text-sm">
-            {dashboardData.bookings.map((item, index) => (
+            {dashboardData.bookings.map((item: Booking, index: number) => (
               <tr key={index}>
                 <td className="py-3 px-4 text-gray-700 border-t border-gray-300">
                   {item.user.username}
@@ -113,7 +134,7 @@ const Dashboard = () => {
                   <button
                     className={`py-1 px-3 text-xs rounded-full mx-auto ${
                       item.isPaid
-                        ? "bg-green-200 text green-600"
+                        ? "bg-green-200 text-green-600"
                         : "bg-amber-200 text-yellow-600"
                     }`}
                   >

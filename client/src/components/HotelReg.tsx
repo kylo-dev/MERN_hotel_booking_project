@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { assets, cities } from "../assets/assets";
 import { useAppContext } from "../context/AppContext";
 import toast from "react-hot-toast";
+import { isError } from "../types/guards";
 
 const HotelReg = () => {
   const { setShowHotelReg, axios, getToken, setIsOwner } = useAppContext();
@@ -10,7 +11,7 @@ const HotelReg = () => {
   const [contact, setContact] = useState("");
   const [city, setCity] = useState("");
 
-  const onSubmitHandler = async (event) => {
+  const onSubmitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
     try {
       event.preventDefault();
       const { data } = await axios.post(
@@ -31,7 +32,9 @@ const HotelReg = () => {
         toast.error(data.message);
       }
     } catch (error) {
-      toast.error(error.message);
+      if (isError(error)) {
+        toast.error(error.message);
+      }
     }
   };
 
