@@ -1,29 +1,27 @@
-import { Request, Response } from "express";
+import { Request, RequestHandler, Response } from "express";
 import Hotel, { IHotel } from "../models/Hotel.js";
 import Room from "../models/Room.js";
 import { v2 as cloudinary } from "cloudinary";
 import { CombinedRequest, AuthRequest, isError } from "../types/guards.js";
 
-export const createRoom = async (
-  req: CombinedRequest,
-  res: Response
-): Promise<void> => {
+export const createRoom: RequestHandler = async (req, res): Promise<void> => {
   try {
     const { roomType, pricePerNight, amenities } = req.body;
-    const hotel = await Hotel.findOne({ owner: req.auth?.userId });
+    const { auth, files } = req as CombinedRequest;
+    const hotel = await Hotel.findOne({ owner: auth?.userId });
 
     if (!hotel) {
       res.json({ success: false, message: "No Hotel found" });
       return;
     }
 
-    if (!req.files || req.files.length === 0) {
+    if (!files || files.length === 0) {
       res.json({ success: false, message: "No images uploaded" });
       return;
     }
 
     // upload images to Cloudinary
-    const uploadImages = req.files.map(async (file: any) => {
+    const uploadImages = files.map(async (file: any) => {
       const response = await cloudinary.uploader.upload(file.path);
       return response.secure_url;
     });

@@ -1,5 +1,11 @@
 import mongoose, { Document, Schema } from "mongoose";
 
+enum BookingStatus {
+  PENDING = "pending",
+  CONFIRMED = "confirmed",
+  CANCELLED = "cancelled",
+}
+
 export interface IBooking extends Document {
   user: string;
   room: string;
@@ -8,7 +14,7 @@ export interface IBooking extends Document {
   checkOutDate: Date;
   totalPrice: number;
   guests: number;
-  status: "pending" | "confirmed" | "cancelled";
+  status: BookingStatus;
   paymentMethod: string;
   isPaid: boolean;
   createdAt: Date;
@@ -26,13 +32,13 @@ const bookingSchema: Schema<IBooking> = new Schema(
     guests: { type: Number, required: true },
     status: {
       type: String,
-      enum: ["pending", "confirmed", "cancelled"],
-      default: "pending",
+      enum: Object.values(BookingStatus),
+      default: BookingStatus.PENDING,
     },
     paymentMethod: { type: String, required: true, default: "Pay At Hotel" },
     isPaid: { type: Boolean, default: false },
   },
-  { timestamps: true }
+  { timestamps: true, versionKey: false }
 );
 
 const Booking = mongoose.model<IBooking>("Booking", bookingSchema);

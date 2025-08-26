@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { isError } from "../types/guards.js";
 
 const connectDB = async (): Promise<void> => {
   try {
@@ -7,10 +8,8 @@ const connectDB = async (): Promise<void> => {
     );
     await mongoose.connect(`${process.env.MONGODB_URI}/hotel`);
   } catch (error) {
-    if (error instanceof Error) {
+    if (isError(error)) {
       console.log(error.message);
-    } else {
-      console.log("Unknown error occurred");
     }
   }
 };
