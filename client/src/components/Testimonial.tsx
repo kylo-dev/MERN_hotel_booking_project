@@ -1,7 +1,6 @@
-import React from "react";
-import Title from "./Title";
-import { testimonials } from "../assets/assets";
-import StarRating from "./StarRating";
+import Title from "./Title.tsx";
+import { testimonials } from "../assets/assets.ts";
+import StarRating from "./StarRating.tsx";
 
 const Testimonial = () => {
   return (

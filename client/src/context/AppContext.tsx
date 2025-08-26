@@ -13,6 +13,24 @@ import { isError } from "../types/guards";
 
 axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URI;
 
+export interface Room {
+  _id: string;
+  roomType: string;
+  pricePerNight: number;
+  amenities: string[];
+  images: string[];
+  isAvailable: boolean;
+  createdAt: string;
+  updatedAt: string;
+  hotel: {
+    _id: string;
+    name: string;
+    address: string;
+    contact: string;
+    city: string;
+  };
+}
+
 interface AppContextType {
   currency: string;
   navigate: NavigateFunction;
@@ -24,9 +42,9 @@ interface AppContextType {
   showHotelReg: boolean;
   setShowHotelReg: (show: boolean) => void;
   searchedCities: string[];
-  setSearchedCities: (cities: string[]) => void;
-  rooms: string[];
-  setRooms: (rooms: string[]) => void;
+  setSearchedCities: React.Dispatch<React.SetStateAction<string[]>>;
+  rooms: Room[];
+  setRooms: (rooms: Room[]) => void;
 }
 
 interface AppProviderProps {
@@ -36,7 +54,7 @@ interface AppProviderProps {
 interface ApiResponse<T = any> {
   success: boolean;
   message?: string;
-  rooms?: string[];
+  rooms?: Room[];
   role?: string;
   recentSearchedCities?: string[];
   data?: T;
@@ -53,7 +71,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [isOwner, setIsOwner] = useState<boolean>(false);
   const [showHotelReg, setShowHotelReg] = useState<boolean>(false);
   const [searchedCities, setSearchedCities] = useState<string[]>([]);
-  const [rooms, setRooms] = useState<string[]>([]);
+  const [rooms, setRooms] = useState<Room[]>([]);
 
   const fetchRooms = async (): Promise<void> => {
     try {

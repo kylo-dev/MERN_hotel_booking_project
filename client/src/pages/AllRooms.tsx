@@ -1,8 +1,8 @@
-import React, { useMemo, useState } from "react";
-import { assets, facilityIcons } from "../assets/assets.ts";
+import { useMemo, useState } from "react";
+import { assets, facilityIcons } from "../assets/assets";
 import { useSearchParams } from "react-router-dom";
 import StarRating from "../components/StarRating";
-import { useAppContext } from "../context/AppContext.tsx";
+import { useAppContext, type Room } from "../context/AppContext";
 
 interface CheckBoxProps {
   label: string;
@@ -14,20 +14,6 @@ interface RadioButtonProps {
   label: string;
   selected?: boolean;
   onChange?: (label: string) => void;
-}
-
-interface Room {
-  _id: string;
-  roomType: string;
-  pricePerNight: number;
-  createdAt: string;
-  images: string[];
-  amenities: string[];
-  hotel: {
-    city: string;
-    name: string;
-    address: string;
-  };
 }
 
 interface SelectedFilters {

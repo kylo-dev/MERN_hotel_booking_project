@@ -1,6 +1,5 @@
-import React from "react";
-import HotelCard from "./HotelCard";
-import Title from "./Title";
+import HotelCard from "./HotelCard.tsx";
+import Title from "./Title.tsx";
 import { useAppContext } from "../context/AppContext.tsx";
 
 const FeaturedDestination = () => {

@@ -1,6 +1,13 @@
 import React from "react";
 
-const Title = ({ title, subTitle, align, font }) => {
+interface TitleProps {
+  title: string;
+  subTitle: string;
+  align?: "left" | "center" | "right";
+  font?: string;
+}
+
+const Title: React.FC<TitleProps> = ({ title, subTitle, align, font }) => {
   return (
     <div
       className={`flex flex-col justify-center items-center text-center ${

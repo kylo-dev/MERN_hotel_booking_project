@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Title from "../../components/Title";
+import Title from "../../components/Title.tsx";
 import { assets } from "../../assets/assets.ts";
 import { useAppContext } from "../../context/AppContext";
 import toast from "react-hot-toast";

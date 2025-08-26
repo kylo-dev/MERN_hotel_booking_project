@@ -1,16 +1,15 @@
-import React from "react";
-import Navbar from "./components/Navbar";
+import Navbar from "./components/Navbar.tsx";
 import { Route, Routes, useLocation } from "react-router-dom";
-import Home from "./pages/Home";
-import Footer from "./components/Footer";
-import AllRooms from "./pages/AllRooms";
-import RoomDetails from "./pages/RoomDetails";
-import MyBookings from "./pages/MyBookings";
-import HotelReg from "./components/HotelReg";
-import Layout from "./pages/hotelOwner/Layout";
-import Dashboard from "./pages/hotelOwner/Dashboard";
-import AddRoom from "./pages/hotelOwner/AddRoom";
-import ListRoom from "./pages/hotelOwner/ListRoom";
+import Home from "./pages/Home.tsx";
+import Footer from "./components/Footer.tsx";
+import AllRooms from "./pages/AllRooms.tsx";
+import RoomDetails from "./pages/RoomDetails.tsx";
+import MyBookings from "./pages/MyBookings.tsx";
+import HotelReg from "./components/HotelReg.tsx";
+import Layout from "./pages/hotelOwner/Layout.tsx";
+import Dashboard from "./pages/hotelOwner/Dashboard.tsx";
+import AddRoom from "./pages/hotelOwner/AddRoom.tsx";
+import ListRoom from "./pages/hotelOwner/ListRoom.tsx";
 import { Toaster } from "react-hot-toast";
 import { useAppContext } from "./context/AppContext.tsx";
 

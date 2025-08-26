@@ -6,7 +6,7 @@ import {
   roomCommonData,
   roomsDummyData,
 } from "../assets/assets.ts";
-import StarRating from "../components/StarRating";
+import StarRating from "../components/StarRating.tsx";
 
 interface Hotel {
   name: string;
@@ -34,7 +34,7 @@ interface RoomCommonData {
 const RoomDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [room, setRoom] = useState<Room | null>(null);
-  const [mainImage, setMainImage] = useState<string | null>(null);
+  const [mainImage, setMainImage] = useState<string>("");
 
   useEffect(() => {
     const foundRoom = roomsDummyData.find((room: Room) => room._id === id);
@@ -76,11 +76,13 @@ const RoomDetails: React.FC = () => {
       {/* Room Images */}
       <div className="flex flex-col lg:flex-row mt-6 gap-6">
         <div className="lg:w-1/2 w-full">
-          <img
-            src={mainImage}
-            alt="room-image"
-            className="w-full rounded-xl shadow-lg object-cover"
-          />
+          {mainImage && (
+            <img
+              src={mainImage}
+              alt="room-image"
+              className="w-full rounded-xl shadow-lg object-cover"
+            />
+          )}
         </div>
         <div className="grid grid-cols-2 gap-4 lg:w-1/2 w-full">
           {room.images.length > 1 &&

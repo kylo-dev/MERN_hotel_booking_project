@@ -1,6 +1,5 @@
-import React from "react";
-import { assets } from "../assets/assets";
-import Title from "./Title";
+import { assets } from "../assets/assets.ts";
+import Title from "./Title.tsx";
 
 const NewsLetter = () => {
   return (
