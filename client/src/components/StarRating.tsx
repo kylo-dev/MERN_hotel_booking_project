@@ -1,4 +1,4 @@
-import { assets } from "../assets/assets.ts";
+import { assets } from "../assets/assets";
 
 const StarRating = ({ rating = 4 }) => {
   return (

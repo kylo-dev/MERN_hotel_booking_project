@@ -1,5 +1,5 @@
-import Title from "./Title.tsx";
-import { assets, exclusiveOffers } from "../assets/assets.ts";
+import Title from "./Title";
+import { assets, exclusiveOffers } from "../assets/assets";
 
 const ExclusiveOffers = () => {
   return (

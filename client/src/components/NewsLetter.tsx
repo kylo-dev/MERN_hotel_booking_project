@@ -1,5 +1,5 @@
-import { assets } from "../assets/assets.ts";
-import Title from "./Title.tsx";
+import { assets } from "../assets/assets";
+import Title from "./Title";
 
 const NewsLetter = () => {
   return (

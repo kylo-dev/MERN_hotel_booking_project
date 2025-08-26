@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { assets } from "../assets/assets.ts";
+import { assets } from "../assets/assets";
 
 interface HotelCardProps {
   room: {

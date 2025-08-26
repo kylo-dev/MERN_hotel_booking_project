@@ -6,7 +6,7 @@ import {
   roomCommonData,
   roomsDummyData,
 } from "../assets/assets.ts";
-import StarRating from "../components/StarRating.tsx";
+import StarRating from "../components/StarRating";
 
 interface Hotel {
   name: string;

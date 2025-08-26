@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { assets, cities } from "../assets/assets.ts";
+import { assets, cities } from "../assets/assets";
 import { useAppContext } from "../context/AppContext";
 
 const Hero = () => {
